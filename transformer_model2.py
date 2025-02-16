@@ -229,8 +229,3 @@ def build_transformer(tgt_vocab_size: int, tgt_seq_len: int, d_model: int=512, N
             nn.init.xavier_uniform_(p)
     
     return transformer
-
-
-# model = build_transformer(10000,100,512,12,8,0.1,2048)
-
-# print(sum(p.numel() for p in model.parameters() if p.requires_grad))
