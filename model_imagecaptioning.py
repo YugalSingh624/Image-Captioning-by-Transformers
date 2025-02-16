@@ -9,7 +9,7 @@ from data_loader import causal_mask
 
 
 
-batch_size = 8
+batch_size = 16
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 device = torch.device(device)
@@ -25,7 +25,7 @@ def print_examples(model, device, dataset):
     )
 
     model.eval()
-    test_img1 = transform(Image.open("Example/dog.jpeg").convert("RGB")).unsqueeze(
+    test_img1 = transform(Image.open("flicker8k/Images/47871819_db55ac4699.jpg").convert("RGB")).unsqueeze(
         0
     )
     print("Example 1 CORRECT: Dog on a beach by the ocean")
@@ -34,14 +34,14 @@ def print_examples(model, device, dataset):
         + " ".join(model.Caption_Generation(test_img1.to(device), dataset.vocab))
     )
     test_img2 = transform(
-        Image.open("Example/child_frisbee.jpeg").convert("RGB")
+        Image.open("flicker8k/Images/3711030008_3872d0b03f.jpg").convert("RGB")
     ).unsqueeze(0)
     print("Example 2 CORRECT: Child holding red frisbee outdoors")
     print(
         "Example 2 OUTPUT: "
         + " ".join(model.Caption_Generation(test_img2.to(device), dataset.vocab))
     )
-    test_img3 = transform(Image.open("Example/bus_car.jpeg").convert("RGB")).unsqueeze(
+    test_img3 = transform(Image.open("flicker8k/Images/3729405438_6e79077ab2.jpg").convert("RGB")).unsqueeze(
         0
     )
     print("Example 3 CORRECT: Bus driving by parked cars")
@@ -50,7 +50,7 @@ def print_examples(model, device, dataset):
         + " ".join(model.Caption_Generation(test_img3.to(device), dataset.vocab))
     )
     test_img4 = transform(
-        Image.open("Example/small_boat.jpeg").convert("RGB")
+        Image.open("flicker8k/Images/3730011219_588cdc7972.jpg").convert("RGB")
     ).unsqueeze(0)
     print("Example 4 CORRECT: A small boat in the ocean")
     print(
@@ -58,7 +58,7 @@ def print_examples(model, device, dataset):
         + " ".join(model.Caption_Generation(test_img4.to(device), dataset.vocab))
     )
     test_img5 = transform(
-        Image.open("Example/cow_boy.jpeg").convert("RGB")
+        Image.open("flicker8k/Images/3724718895_bd03f4a4dc.jpg").convert("RGB")
     ).unsqueeze(0)
     print("Example 5 CORRECT: A cowboy riding a horse in the desert")
     print(

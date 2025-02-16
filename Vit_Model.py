@@ -21,7 +21,7 @@ size = 224
 epoch = 30
 base_lr = 10e-3
 weight_decay = 0.03
-batch_size = 8
+batch_size = 16
 
 
 
@@ -223,13 +223,3 @@ class VitModel(nn.Module):
         
 
         return enc_output
-        
-
-    
-
-# model = VitModel().to(device)
-# test_input = torch.randn((32,3,224,224)).to(device)
-# print(model(test_input).shape)
-
-
-# print(sum(p.numel() for p in model.parameters() if p.requires_grad))

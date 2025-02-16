@@ -49,22 +49,23 @@ if __name__ == "__main__":
     #     state = torch.load(model_filename)
     #     model.load_state_dict(state['model_state_dict'])
     #     # initial_epoch = state['epoch'] + 1
-    #     optimizer.load_state_dict(state['optimizer_state_dict'])
+    #     # optimizer.load_state_dict(state['optimizer_state_dict'])
     #     # global_step = state['global_step']
     # else:
     #     print('No model to preload, starting from scratch')
 
     
 
-    # scaler = torch.amp.GradScaler('cuda')
+    # # scaler = torch.amp.GradScaler('cuda')
 
     for epoch in range(30):
         torch.cuda.empty_cache()
         model.train()
         batch_iterator = tqdm(loader, desc=f"Processing Epoch {epoch:02d}")
         for imgs, captions, tgt_masks, labels in batch_iterator:
-
-            optimizer.zero_grad(set_to_none=True)
+            # print_examples(model,device,dataset)
+            # break
+            
             
             imgs = imgs.to(device)
             
@@ -86,7 +87,7 @@ if __name__ == "__main__":
             
             batch_iterator.set_postfix({"loss": f"{loss.item():6.3f}"})
 
-            
+            optimizer.zero_grad(set_to_none=True)
             loss.backward()
             
             optimizer.step()
@@ -103,3 +104,4 @@ if __name__ == "__main__":
             'optimizer_state_dict': optimizer.state_dict(),
             # 'global_step': global_step
         }, model_filename)
+        

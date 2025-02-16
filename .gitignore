@@ -4,3 +4,5 @@ flicker8k
 exp.ipynb
 exp.py
 saved_model.pt
+saved_model_31st.pt
+saved_model_from_kaggle.pt

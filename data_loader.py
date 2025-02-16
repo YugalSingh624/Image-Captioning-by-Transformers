@@ -143,7 +143,7 @@ def get_loader(
     root_folder,
     annotation_file,
     transform,
-    batch_size=8,
+    batch_size=16,
     num_workers=8,
     shuffle=True,
     pin_memory=True,
@@ -166,22 +166,22 @@ def get_loader(
     return loader, dataset
 
 
-if __name__ == "__main__":
-    transform = transforms.Compose(
-        [transforms.Resize((224, 224)), transforms.ToTensor(),]
-    )
+# if __name__ == "__main__":
+#     transform = transforms.Compose(
+#         [transforms.Resize((224, 224)), transforms.ToTensor(),]
+#     )
 
-    loader, dataset = get_loader(
-        "flicker8k/Images", "flicker8k/captions.txt", transform=transform
-    )
+#     loader, dataset = get_loader(
+#         "flicker8k/Images", "flicker8k/captions.txt", transform=transform
+#     )
 
-    for idx, (imgs, captions, tgt_mask, label) in enumerate(loader):
-        print(imgs.shape)
-        # print("Decoder input type:", type(captions))
-        print("Decoder Input Size:",captions.shape)
-        # print("Decoder mask Type:", type(tgt_mask))
-        print("Decoder mask shape:",tgt_mask.shape)
+#     for idx, (imgs, captions, tgt_mask, label) in enumerate(loader):
+#         print(imgs.shape)
+#         # print("Decoder input type:", type(captions))
+#         print("Decoder Input Size:",captions.shape)
+#         # print("Decoder mask Type:", type(tgt_mask))
+#         print("Decoder mask shape:",tgt_mask.shape)
 
-        print("Label Shape:", label.shape)
-        break
+#         print("Label Shape:", label.shape)
+#         break
 

@@ -134,30 +134,6 @@ class MultiHeadAttentionBlock(nn.Module):
         # (batch, seq_len, d_model) --> (batch, seq_len, d_model)  
         return self.w_o(x)
 
-class EncoderBlock(nn.Module):
-
-    def __init__(self, features: int, self_attention_block: MultiHeadAttentionBlock, feed_forward_block: FeedForwardBlock, dropout: float) -> None:
-        super().__init__()
-        self.self_attention_block = self_attention_block
-        self.feed_forward_block = feed_forward_block
-        self.residual_connections = nn.ModuleList([ResidualConnection(features, dropout) for _ in range(2)])
-
-    def forward(self, x, src_mask):
-        x = self.residual_connections[0](x, lambda x: self.self_attention_block(x, x, x, src_mask))
-        x = self.residual_connections[1](x, self.feed_forward_block)
-        return x
-    
-class Encoder(nn.Module):
-
-    def __init__(self, features: int, layers: nn.ModuleList) -> None:
-        super().__init__()
-        self.layers = layers
-        self.norm = LayerNormalization(features)
-
-    def forward(self, x, mask):
-        for layer in self.layers:
-            x = layer(x, mask)
-        return self.norm(x)
 
 class DecoderBlock(nn.Module):
 
@@ -198,17 +174,15 @@ class ProjectionLayer(nn.Module):
     
 class Transformer(nn.Module):
 
-    def __init__(self, encoder: Encoder, decoder: Decoder, tgt_embed: InputEmbeddings, tgt_pos: PositionalEncoding, projection_layer: ProjectionLayer) -> None:
+    def __init__(self,  decoder: Decoder, tgt_embed: InputEmbeddings, tgt_pos: PositionalEncoding, projection_layer: ProjectionLayer) -> None:
         super().__init__()
-        self.encoder = encoder
+        
         self.decoder = decoder
         self.tgt_embed = tgt_embed
         self.tgt_pos = tgt_pos
         self.projection_layer = projection_layer
 
-    def encode(self, src, src_mask):
-        # (batch, seq_len, d_model)
-        return self.encoder(src, src_mask)
+
     
     def decode(self, encoder_output: torch.Tensor, src_mask: torch.Tensor, tgt: torch.Tensor, tgt_mask: torch.Tensor):
         # (batch, seq_len, d_model)
@@ -229,14 +203,7 @@ def build_transformer(tgt_vocab_size: int, tgt_seq_len: int, d_model: int=512, N
     
     tgt_pos = PositionalEncoding(d_model, tgt_seq_len, dropout)
     
-    # Create the encoder blocks
-    encoder_blocks = []
-    for _ in range(N):
-        encoder_self_attention_block = MultiHeadAttentionBlock(d_model, h, dropout)
-        feed_forward_block = FeedForwardBlock(d_model, d_ff, dropout)
-        encoder_block = EncoderBlock(d_model, encoder_self_attention_block, feed_forward_block, dropout)
-        encoder_blocks.append(encoder_block)
-
+    
     # Create the decoder blocks
     decoder_blocks = []
     for _ in range(N):
@@ -247,14 +214,14 @@ def build_transformer(tgt_vocab_size: int, tgt_seq_len: int, d_model: int=512, N
         decoder_blocks.append(decoder_block)
     
     # Create the encoder and decoder
-    encoder = Encoder(d_model, nn.ModuleList(encoder_blocks))
+    
     decoder = Decoder(d_model, nn.ModuleList(decoder_blocks))
     
     # Create the projection layer
     projection_layer = ProjectionLayer(d_model, tgt_vocab_size)
     
     # Create the transformer
-    transformer = Transformer(encoder, decoder, tgt_embed, tgt_pos, projection_layer)
+    transformer = Transformer( decoder, tgt_embed, tgt_pos, projection_layer)
     
     # Initialize the parameters
     for p in transformer.parameters():
@@ -264,6 +231,6 @@ def build_transformer(tgt_vocab_size: int, tgt_seq_len: int, d_model: int=512, N
     return transformer
 
 
-# model = build_transformer(15698,197,768,12,8,0.1,9216)
+# model = build_transformer(10000,100,512,12,8,0.1,2048)
 
 # print(sum(p.numel() for p in model.parameters() if p.requires_grad))
